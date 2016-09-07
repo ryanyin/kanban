@@ -8,6 +8,8 @@ const webpack = require('webpack');
 const merge=require('webpack-merge');
 const TARGET=process.env.npm_lifecycle_event;
 
+const NpmInstallPlugin=require('npm-install-webpack-plugin');
+
 const PATH={
     app:path.join(__dirname,'app'),
     build:path.join(__dirname,'build')
@@ -16,14 +18,39 @@ const common={
     entry:{
         app:PATH.app
     },
+    resolve:{
+        extensions:['','.js','.jsx']
+    },
     output:{
         path:PATH.build,
         filename:'bundle.js'
+    },
+    module:{
+        loaders:[{
+            test:/\.css$/,
+            loaders:['style','css'],
+            include:PATH.app
+        },
+        {
+            test:/\.jsx?$/,
+            loaders:['babel?cacheDirectory'],
+            include:PATH.app
+        },
+        {
+            test:/\.jsx?$/,
+            loader:'babel',
+            query:{
+                cacheDirectory:true,
+                presets:['react','es2015','survivejs-kanban']
+            },
+            include:PATH.app
+        }]
     }
 };
 
 if(TARGET=='start'||!TARGET){
     module.exports=merge(common,{
+        devtool:'eval-source-map',
         devServer:{
             contentBase:PATH.build,
             historyApiFallback:true,
@@ -35,7 +62,10 @@ if(TARGET=='start'||!TARGET){
             port:process.env.PORT
         },
         plugins:[
-            new webpack.HotModuleReplacementPlugin()
+            new webpack.HotModuleReplacementPlugin(),
+            new NpmInstallPlugin({
+                save:true  //--save
+            })
         ]
     });
 }
