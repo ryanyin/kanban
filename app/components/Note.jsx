@@ -1,3 +1,3 @@
 import React from 'react';
 
-export default () => <div>Learn Webpack the test is succeseefull</div>;
+export default () => <div>Learn Webpack haha this is success test again</div>;

@@ -14,6 +14,9 @@ const PATH={
     app:path.join(__dirname,'app'),
     build:path.join(__dirname,'build')
 };
+
+process.env.BABEL_ENV=TARGET;
+
 const common={
     entry:{
         app:PATH.app
